@@ -4,9 +4,12 @@ const bcrypt = require("bcrypt");
 exports.signup = async (req, res) => {
     try {
         const { name, email, password } = req.body;
-
         const userName = await User
             .findOne({ name: name });
+
+        if(!name || !email || !password){
+            return res.status(400).json({ message: "detils not found, Change it" });
+        }    
         if (userName) {
             return res.status(400).json({ message: "UserName already exists, Change it" });
         }
@@ -30,7 +33,7 @@ exports.signup = async (req, res) => {
 
     }
     catch {
-        res.status(500).json({ message: "Something went wrong to SingUp" });
+        res.status(500).json({ message: "Something went wrongggg to SingUp" });
     }
 }
 
