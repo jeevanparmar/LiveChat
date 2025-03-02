@@ -39,21 +39,17 @@ const io = socket(server, {
 global.onlineUsers = new Map();  
 
 io.on("connection", (socket) => {
-    console.log("A new user connected");
 
     // Add user to the onlineUsers map
     socket.on("add-user", (userId) => {
-        console.log(`User ${userId} added`);
         onlineUsers.set(userId, socket.id);  
     });
 
     // Handle message sending
     socket.on("send-msg", (data) => {
-        console.log("Message data received: ", data);
         
         const sendUserSocket = onlineUsers.get(data.to);  
         if (sendUserSocket) {
-            console.log("data",data)
             socket.to(sendUserSocket).emit("msg-recieve", data);  
             socket.emit("msg-sent", { status: "delivered", msg: data.msg });  
         }
@@ -65,7 +61,6 @@ io.on("connection", (socket) => {
         onlineUsers.forEach((socketId, userId) => {
             if (socketId === socket.id) {
                 onlineUsers.delete(userId);
-                console.log(`User ${userId} disconnected`);
             }
         });
     });
