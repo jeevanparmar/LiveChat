@@ -12,7 +12,7 @@ const Port = process.env.PORT || 3000
 
 app.use(express.json());
 app.use(cors({
-    origin: "http://localhost:3000",  
+    origin: process.env.HOST,  
     methods: "GET,POST,PUT,DELETE",
     credentials: true
 }));
@@ -31,7 +31,7 @@ const server = app.listen(Port, () => {
 
 const io = socket(server, {
     cors: {
-        origin: "http://localhost:3000", 
+        origin: process.env.HOST, 
         credentials: true,
     },
 });
