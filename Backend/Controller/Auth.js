@@ -11,6 +11,7 @@ exports.signup = async (req, res) => {
             return res.status(400).json({ message: "UserName already exists, Change it" });
         }
 
+        
         const userEmail = await User
             .findOne({ email: email });
 
