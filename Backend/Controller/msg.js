@@ -7,6 +7,7 @@ module.exports.addMessage = async (req, res,) => {
       message: { text: message },
       users: [from, to],
       sender: from,
+      receiver: to,
     });
 
     if (data) return res.json({ msg: "Message added successfully.", message: message });
@@ -56,11 +57,41 @@ module.exports.deleteMsg = async (req, res) => {
       )
     }
     return res.json({
-      message:"msg not found"
+      message: "msg not found"
     })
   } catch (e) {
-     return res.status(400).json({
-      message:"error to delete msg"
-     })
+    return res.status(400).json({
+      message: "error to delete msg"
+    })
   }
 }
+
+// 
+module.exports.ChatedUsers = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    console.log("Received userId:", userId);
+    const chatedusers = await Messages.find(
+      {
+        users: { $in: [userId] },
+      },
+      { sender: 1, receiver: 1 }
+    );
+
+    const arrayOfUsers = chatedusers.map((user) =>
+      user.sender.toString() === userId ? user.receiver.toString() : user.sender.toString()
+    );
+
+    const userFriends = [...new Set(arrayOfUsers)];
+
+    return res.status(200).json({
+      users: userFriends,
+    });
+  } catch (e) {
+    console.error("Error occurred:", e.message);
+    return res.status(500).json({
+      message: "Internal server error",
+      error: e.message,
+    });
+  }
+};
